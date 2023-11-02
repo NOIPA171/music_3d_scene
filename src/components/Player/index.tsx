@@ -63,7 +63,7 @@ const Player = () => {
       </button>
       <button
         onClick={() =>
-          player.togglePlay().then(() => {
+          player?.togglePlay().then(() => {
             console.log("toggled playback");
           })
         }
@@ -72,7 +72,7 @@ const Player = () => {
       </button>
       <button
         onClick={() => {
-          player.getCurrentState().then((state: any) => {
+          player?.getCurrentState().then((state: any) => {
             if (!state) {
               console.error(
                 "User is not playing music through the Web Playback SDK"
