@@ -61,6 +61,7 @@ const Player = () => {
       <button onClick={() => togglePlayback()}>
         {isPlaying ? "Pause" : "Play"}
       </button>
+      <div />
       <button
         onClick={() =>
           player?.togglePlay().then(() => {

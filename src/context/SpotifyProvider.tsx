@@ -17,6 +17,7 @@ const SpotifyProvider = ({ children }: { children: React.ReactNode }) => {
   });
   const [spotifyData, seteSpotifyData] = useState({});
   const [isLoading, setIsLoading] = useState(true);
+  const [deviceId, setDeviceId] = useState<string | undefined>();
   const player: { current?: Spotify.Player } = useRef();
   const getPlaybackState = async () => {
     try {
@@ -53,19 +54,13 @@ const SpotifyProvider = ({ children }: { children: React.ReactNode }) => {
         volume: 0.5,
       });
 
-      player.current.addListener(
-        "ready",
-        ({ device_id }: { device_id: string }) => {
-          console.log("Ready with Device ID", device_id);
-        }
-      );
+      player.current.addListener("ready", ({ device_id }) => {
+        setDeviceId(device_id);
+      });
 
-      player.current.addListener(
-        "not_ready",
-        ({ device_id }: { device_id: string }) => {
-          console.log("Device ID has gone offline", device_id);
-        }
-      );
+      player.current.addListener("not_ready", () => {
+        setDeviceId(undefined);
+      });
 
       player.current.connect();
     };
@@ -76,6 +71,28 @@ const SpotifyProvider = ({ children }: { children: React.ReactNode }) => {
       initSpotifyPlayer();
     }
   }, [status]);
+
+  const transferPlayback = async () => {
+    const res = await fetch("https://api.spotify.com/v1/me/player", {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${session?.accessToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        device_ids: [deviceId],
+        play: true,
+      }),
+    });
+
+    console.log("transferPlayback", res);
+  };
+
+  useEffect(() => {
+    if (deviceId) {
+      transferPlayback();
+    }
+  }, [deviceId]);
 
   const values: SpotifyProverProps = {
     player: player.current,
