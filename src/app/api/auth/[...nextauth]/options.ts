@@ -5,9 +5,7 @@ import SpotifyProvider from "next-auth/providers/spotify";
 const spotifyScopes = [
   "user-read-playback-state",
   "user-modify-playback-state",
-  "user-read-email",
-  "streaming",
-  "user-read-private",
+  "user-read-currently-playing",
 ].join(" ");
 export const options: NextAuthOptions = {
   // custom sign in page
@@ -44,6 +42,9 @@ export const options: NextAuthOptions = {
         });
 
         const response = await res.json();
+        if (!response.ok) {
+          token.error = "RefreshAccessTokenError";
+        }
         // TBD: refresh token
         console.log("response", response);
       }
@@ -52,6 +53,7 @@ export const options: NextAuthOptions = {
     async session({ session, token }) {
       // Send properties to the client, like an access_token from a provider.
       session.accessToken = token.accessToken;
+      session.error = token.error;
       return session;
     },
   },

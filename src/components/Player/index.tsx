@@ -9,35 +9,18 @@ const Player = () => {
   const { status, data: session } = useSession({
     required: false,
   });
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [isLoading, setIsLoading] = useState(true); // is fetching Spotify API
-
-  const { player } = useSpotify();
-  useEffect(() => {
-    // const getPlaybackState = async () => {
-    //   try {
-    //     const res = await fetch("https://api.spotify.com/v1/me/player", {
-    //       headers: {
-    //         Authorization: `Bearer ${session?.accessToken}`,
-    //       },
-    //     });
-    //     console.log("res", res);
-    //     const response = await res.json();
-    //     setIsPlaying(response.is_playing);
-    //     setIsLoading(false);
-    //   } catch (err) {
-    //     console.log("error", err);
-    //     console.log("Please open Spotify to play");
-    //   }
-    // };
-    // if (status === "authenticated") {
-    //   getPlaybackState();
-    // }
-  }, [status]);
+  const {
+    hasDevice,
+    initPlayer,
+    isLoading,
+    setIsLoading,
+    isPlaying,
+    setIsPlaying,
+  } = useSpotify();
 
   const togglePlayback = async () => {
     // prevent user from clicking it multiple times
-    if (isLoading) return;
+    // if (isLoading) return;
 
     setIsLoading(true);
     const res = await fetch(
@@ -57,40 +40,29 @@ const Player = () => {
 
   return (
     <div>
-      Player
-      <button onClick={() => togglePlayback()}>
-        {isPlaying ? "Pause" : "Play"}
-      </button>
+      <div>Player</div>
+      {isLoading ? (
+        "loading"
+      ) : hasDevice ? (
+        <button onClick={() => togglePlayback()}>
+          {isPlaying ? "Pause" : "Play"}
+        </button>
+      ) : (
+        <div>
+          No device available,{" "}
+          <a
+            href="https://open.spotify.com/"
+            target="_blank"
+            rel="noreferrer noopener"
+          >
+            open Spotify
+          </a>{" "}
+          to control your music on this interface
+          <button onClick={() => initPlayer()}>Refresh</button>
+        </div>
+      )}
+
       <div />
-      <button
-        onClick={() =>
-          player?.togglePlay().then(() => {
-            console.log("toggled playback");
-          })
-        }
-      >
-        Toggle play
-      </button>
-      <button
-        onClick={() => {
-          player?.getCurrentState().then((state: any) => {
-            if (!state) {
-              console.error(
-                "User is not playing music through the Web Playback SDK"
-              );
-              return;
-            }
-
-            var current_track = state.track_window.current_track;
-            var next_track = state.track_window.next_tracks[0];
-
-            console.log("Currently Playing", current_track);
-            console.log("Playing Next", next_track);
-          });
-        }}
-      >
-        Check state
-      </button>
     </div>
   );
 };
