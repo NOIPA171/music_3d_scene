@@ -3,8 +3,6 @@
 import { Canvas, useFrame } from "@react-three/fiber";
 import Box from "./models/Box";
 import { useEffect } from "react";
-import { useSession } from "next-auth/react";
-import { signIn, signOut } from "next-auth/react";
 import { OrbitControls, useGLTF, MeshWobbleMaterial } from "@react-three/drei";
 
 // MeshWobbleMaterial -> can be used for flower/plants
@@ -35,8 +33,6 @@ export const SimpleChair = () => {
 const Scene = () => {
   return (
     <>
-      <button onClick={() => signIn()}>Sign In</button>
-      <button onClick={() => signOut()}>Sign Out</button>
       <Canvas>
         <OrbitControls />
         <ambientLight />
