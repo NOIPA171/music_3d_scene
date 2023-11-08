@@ -29,6 +29,7 @@ export const options: NextAuthOptions = {
         token.expires_at = account.expires_at;
         token.refresh_token = account.refresh_token;
       } else if (token.expires_at && Date.now() >= token.expires_at * 1000) {
+        console.log("token", token);
         const res = await fetch("https://accounts.spotify.com/api/token", {
           method: "POST",
           headers: {
@@ -42,7 +43,7 @@ export const options: NextAuthOptions = {
         });
 
         const response = await res.json();
-        if (!response.ok) {
+        if (!response.ok || response.error === "invalid_request") {
           token.error = "RefreshAccessTokenError";
         }
         // TBD: refresh token

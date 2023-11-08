@@ -20,6 +20,7 @@ const SpotifyProvider = ({ children }: { children: React.ReactNode }) => {
 
   const [currentTrack, setCurrentTrack] =
     useState<SpotifyApi.CurrentlyPlayingObject>();
+  const [isInit, setIsInit] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [hasDevice, setHasDevice] = useState(false);
@@ -27,9 +28,11 @@ const SpotifyProvider = ({ children }: { children: React.ReactNode }) => {
   const initPlayer = async () => {
     const deviceRes = await _getDevices();
     switch (deviceRes.status) {
+      case "no_available_device":
+        break;
       case "no_active_device":
         const playbackRes = await _transferPlayback(deviceRes.id as string);
-        if (playbackRes === "ok") {
+        if (playbackRes.status === "ok") {
           _getCurrentTrack();
         }
       case "ok":
@@ -70,17 +73,17 @@ const SpotifyProvider = ({ children }: { children: React.ReactNode }) => {
         if (!device?.is_active) {
           // device must be active in order to pause/play the music from there
           resolve({ status: "no_active_device", id: device.id });
-          await _transferPlayback(device.id);
+          // await _transferPlayback(device.id);
         }
         resolve({ status: "ok", id: device.id });
-        _getCurrentTrack();
+        // _getCurrentTrack();
       }
     );
   };
 
   // transfer playback to another device
   const _transferPlayback = (deviceId: string) => {
-    return new Promise<"ok" | "error">(async (resolve, reject) => {
+    return new Promise<{ status: "ok" | "error" }>(async (resolve, reject) => {
       const res = await fetch("https://api.spotify.com/v1/me/player", {
         method: "PUT",
         headers: {
@@ -91,7 +94,7 @@ const SpotifyProvider = ({ children }: { children: React.ReactNode }) => {
           device_ids: [deviceId],
         }),
       });
-      resolve(res.ok ? "ok" : "error");
+      resolve({ status: res.ok ? "ok" : "error" });
     });
   };
 

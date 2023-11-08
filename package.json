@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@react-three/drei": "^9.88.11",
     "@react-three/fiber": "^8.15.9",
     "@types/spotify-api": "^0.0.24",
     "@types/three": "^0.158.0",
