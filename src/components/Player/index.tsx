@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
-// need AuthProvider for client components to use useSession
 import { useAudioPlayer } from "react-use-audio-player";
+import Image from "next/image";
 import styles from "./styles.module.scss";
 import classNames from "classNames/bind";
 const cx = classNames.bind(styles);
@@ -20,16 +20,16 @@ const Player = () => {
   const { load, togglePlayPause, getPosition, seek, playing, duration } =
     useAudioPlayer();
 
-  const [position, setPosition] = useState(0);
+  const [position, setPosition] = useState(0); // as in position in the track
   const [isDragging, setIsDragging] = useState(false);
-  const [dragPosition, setDragPosition] = useState(0);
   const dragRef = useRef(isDragging);
-  const dragPosRef = useRef(dragPosition);
-  const frameRef = useRef<number>();
-  const durationRef = useRef(0);
+  // used for event listeners
+  const posRef = useRef(position); // updated with position
+  const frameRef = useRef<number>(); // for cancelling requestAnimationFrame
+  const durationRef = useRef(0); // same as duration from audio
+  // element that detects dragging
   const barElm = useRef<HTMLDivElement>(null);
 
-  // console.log("playing", playing, duration);
   useEffect(() => {
     load("/music/relaxing_music.mp3", {
       autoplay: false,
@@ -45,21 +45,27 @@ const Player = () => {
   }, []);
 
   useEffect(() => {
+    // update durationRef when song is loaded
     durationRef.current = duration;
   }, [duration]);
 
   // update position bar
+  const animateProgressBar = () => {
+    setPosition(Math.floor(getPosition())); // round the numbers so it doesn't constantly re-render
+    frameRef.current = requestAnimationFrame(animateProgressBar);
+  };
+
   useEffect(() => {
-    const animate = () => {
-      setPosition(Math.floor(getPosition())); // round the numbers so it doesn't constantly re-render
-      frameRef.current = requestAnimationFrame(animate);
-    };
-    frameRef.current = window.requestAnimationFrame(animate);
+    if (playing && !isDragging) {
+      frameRef.current = window.requestAnimationFrame(animateProgressBar);
+    } else {
+      frameRef.current && cancelAnimationFrame(frameRef.current);
+    }
 
     return () => {
       frameRef.current && cancelAnimationFrame(frameRef.current);
     };
-  }, [getPosition]);
+  }, [playing, isDragging, animateProgressBar]);
 
   // handle max and min of dragging position
   const normalizePosition = (num: number) => {
@@ -72,23 +78,16 @@ const Player = () => {
   };
 
   useEffect(() => {
-    console.log("position update", position);
-  }, [position]);
-
-  useEffect(() => {
-    // TODO: skip location mechanics
+    // seek position on drag end
     const handleDragEnd = () => {
       if (!dragRef.current || !barElm.current) return;
-      // const rect = barElm.current.getBoundingClientRect();
-      // const newPosition = normalizePosition(
-      //   (dragPosRef.current / rect.width) * durationRef.current
-      // );
-      console.log("drag end", dragPosRef.current);
+      // console.log("drag end", posRef.current);
       dragRef.current = false;
-      seek(dragPosRef.current);
+      seek(posRef.current);
       setIsDragging(false);
     };
 
+    // update bar position on moving
     const handleDragMove = (evt: MouseEvent) => {
       if (!dragRef.current || !barElm.current) return;
       const rect = barElm.current.getBoundingClientRect();
@@ -96,9 +95,9 @@ const Player = () => {
       const newPosition = normalizePosition(
         (location / rect.width) * durationRef.current
       );
-      console.log("dragging", newPosition);
-      dragPosRef.current = newPosition;
-      setDragPosition(newPosition);
+      // console.log("dragging", newPosition);
+      posRef.current = newPosition;
+      setPosition(newPosition);
     };
 
     document.addEventListener("mouseup", handleDragEnd);
@@ -110,47 +109,69 @@ const Player = () => {
     };
   }, []);
 
-  const handleDragStart = (evt: React.MouseEvent<HTMLElement>) => {
+  // initiate drag
+  const handleDragStart = (evt: React.MouseEvent) => {
+    if (!barElm.current) return;
     dragRef.current = true;
     setIsDragging(true);
-    let div = evt.target as HTMLInputElement;
-    const rect = div.getBoundingClientRect();
+    const rect = barElm.current.getBoundingClientRect();
     const location = evt.clientX - rect.x;
     const newPosition = (location / rect.width) * duration;
-    dragPosRef.current = newPosition;
-    setDragPosition(newPosition);
-    console.log("drag start", newPosition);
+    posRef.current = newPosition;
+    setPosition(newPosition);
+    // console.log("drag start", newPosition);
   };
 
   return (
-    <div>
-      <div>Player</div>
-      <div>
-        <button>Prev</button>
-        <button onClick={() => togglePlayPause()}>
-          {playing ? "Pause" : "Play"}
+    <div className={cx("player")}>
+      <div className={cx("controls")}>
+        <button>
+          <Image
+            src={`/icons/player-skip-back.svg`}
+            alt="skip back"
+            width={24}
+            height={24}
+          />
         </button>
-        <button>Next</button>
+        <button onClick={() => togglePlayPause()} className={cx("main-btn")}>
+          <Image
+            src={`/icons/player-${playing ? "pause" : "play"}.svg`}
+            alt={playing ? "pause" : "play"}
+            width={24}
+            height={24}
+          />
+        </button>
+        <button>
+          <Image
+            src={`/icons/player-skip-forward.svg`}
+            alt="skip back"
+            width={24}
+            height={24}
+          />
+        </button>
       </div>
       <div>Name of the song</div>
       <div className={cx("progress-bar")}>
-        <div className={cx("time")}>
-          {getTime(isDragging ? dragPosition : position)}
-        </div>
+        <div className={cx("time")}>{getTime(position)}</div>
         <div
           ref={barElm}
-          className={cx("bar")}
+          className={cx("bar", { active: isDragging })}
           onMouseDown={(evt) => handleDragStart(evt)}
         >
           <div
-            className={cx("progress")}
-            style={{
-              width:
-                Math.round(
-                  ((isDragging ? dragPosition : position) / duration) * 100
-                ) + "%",
-            }}
-          ></div>
+            className={cx("progress-bg")}
+            style={
+              {
+                "--bar-transform":
+                  -100 + (Math.round((position / duration) * 100) || 0) + "%",
+              } as React.CSSProperties
+            }
+          >
+            <div className={cx("progress-cont")}>
+              <div className={cx("progress")}></div>
+            </div>
+            <div className={cx("progress-btn")}></div>
+          </div>
         </div>
         <div className={cx("time")}>{getTime(duration)}</div>
       </div>
