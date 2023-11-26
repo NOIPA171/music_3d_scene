@@ -2,15 +2,21 @@
 
 import { Canvas, useFrame } from "@react-three/fiber";
 import Box from "./models/Box";
-import { useEffect } from "react";
-import { OrbitControls, useGLTF, MeshWobbleMaterial } from "@react-three/drei";
+import Hills from "./Hills";
+import {
+  OrbitControls,
+  useGLTF,
+  MeshWobbleMaterial,
+  Sampler,
+} from "@react-three/drei";
 
 // MeshWobbleMaterial -> can be used for flower/plants
 
 export function Chair() {
   const { nodes, materials } = useGLTF("/Chair.glb");
-  // console.log("nodes", nodes);
-  // console.log("materials", materials);
+  console.log("nodes", nodes);
+  console.log("materials", materials);
+
   return (
     <mesh
       geometry={nodes.Chair_mesh.geometry}
@@ -22,31 +28,20 @@ export function Chair() {
   );
 }
 
-export const SimpleChair = () => {
-  return (
-    <mesh>
-      <boxGeometry args={[1, 1, 1]} />
-    </mesh>
-  );
-};
-
 const Scene = () => {
   return (
     <>
-      <Canvas>
+      <Canvas shadows>
         <OrbitControls />
-        <ambientLight />
-        <pointLight position={[10, 10, 10]} />
-        <Box position={[-1.2, 0, 0]} />
-        <Box position={[1.2, 0, 0]} />
 
-        <ambientLight intensity={0.1} />
+        <Hills />
+        {/* <Box position={[-1.2, 0, 0]} />
+        <Box position={[1.2, 0, 0]} /> */}
         <directionalLight color="red" position={[0, 0, 5]} />
-        <mesh rotation-x={1}>
+        {/* <mesh rotation-x={1}>
           <boxGeometry args={[2, 2, 2]} />
           <meshStandardMaterial />
-        </mesh>
-
+        </mesh> */}
         <mesh
           visible
           userData={{ hello: "world" }}
@@ -56,19 +51,7 @@ const Scene = () => {
           <sphereGeometry args={[1, 16, 16]} />
           <meshStandardMaterial color="hotpink" transparent />
         </mesh>
-
-        <directionalLight
-          castShadow
-          position={[2.5, 8, 5]}
-          shadow-mapSize={[1024, 1024]}
-        >
-          <orthographicCamera
-            attach="shadow-camera"
-            args={[-10, 10, 10, -10]}
-          />
-        </directionalLight>
-
-        <Chair />
+        {/* <Chair /> */}
       </Canvas>
     </>
   );

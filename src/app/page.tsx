@@ -8,7 +8,7 @@ import Player from "@/components/Player";
 export default async function Home() {
   return (
     <>
-      {/* <Scene /> */}
+      <Scene />
       <Player />
     </>
   );

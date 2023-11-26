@@ -17,8 +17,15 @@ const getTime = (duration: number): string => {
 };
 
 const Player = () => {
-  const { load, togglePlayPause, getPosition, seek, playing, duration } =
-    useAudioPlayer();
+  const {
+    load,
+    togglePlayPause,
+    getPosition,
+    seek,
+    isReady,
+    playing,
+    duration,
+  } = useAudioPlayer();
 
   const [position, setPosition] = useState(0); // as in position in the track
   const [isDragging, setIsDragging] = useState(false);
@@ -152,7 +159,7 @@ const Player = () => {
       </div>
       <div>Name of the song</div>
       <div className={cx("progress-bar")}>
-        <div className={cx("time")}>{getTime(position)}</div>
+        <div className={cx("time")}>{isReady ? getTime(position) : "-:--"}</div>
         <div
           ref={barElm}
           className={cx("bar", { active: isDragging })}
@@ -173,7 +180,7 @@ const Player = () => {
             <div className={cx("progress-btn")}></div>
           </div>
         </div>
-        <div className={cx("time")}>{getTime(duration)}</div>
+        <div className={cx("time")}>{isReady ? getTime(duration) : "-:--"}</div>
       </div>
       <div />
     </div>
