@@ -1,15 +1,14 @@
-import Image from "next/image";
-import styles from "./page.module.css";
-// import Script from "next/script";
-
 import Scene from "@/components/Scene";
 import Player from "@/components/Player";
+import SongList from "@/components/SongList";
+import PlayerProvider from "@/context/PlayerProvider";
 
 export default async function Home() {
   return (
-    <>
-      <Scene />
+    <PlayerProvider>
+      {/* <Scene /> */}
       <Player />
-    </>
+      <SongList />
+    </PlayerProvider>
   );
 }

@@ -1,9 +1,10 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
-import { useAudioPlayer } from "react-use-audio-player";
+import { useGlobalAudioPlayer } from "react-use-audio-player";
 import Image from "next/image";
 import styles from "./styles.module.scss";
 import classNames from "classNames/bind";
+import { usePlayer } from "@/context/PlayerProvider";
 const cx = classNames.bind(styles);
 
 const parseDigits = (number: number): string => {
@@ -17,16 +18,9 @@ const getTime = (duration: number): string => {
 };
 
 const Player = () => {
-  const {
-    load,
-    togglePlayPause,
-    getPosition,
-    seek,
-    isReady,
-    playing,
-    duration,
-  } = useAudioPlayer();
-
+  const { togglePlayPause, getPosition, seek } = useGlobalAudioPlayer();
+  const { loadSong, currentTrackIdx, songList, isReady, playing, duration } =
+    usePlayer();
   const [position, setPosition] = useState(0); // as in position in the track
   const [isDragging, setIsDragging] = useState(false);
   const dragRef = useRef(isDragging);
@@ -36,20 +30,6 @@ const Player = () => {
   const durationRef = useRef(0); // same as duration from audio
   // element that detects dragging
   const barElm = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    load("/music/relaxing_music.mp3", {
-      autoplay: false,
-      onload: () => {
-        // TODO: check if updating state is necessary
-        // TODO: show spinner while it's loading
-        console.log("loaded");
-      },
-      onend: () => {
-        // TODO: skip to next song
-      },
-    });
-  }, []);
 
   useEffect(() => {
     // update durationRef when song is loaded
@@ -129,10 +109,20 @@ const Player = () => {
     // console.log("drag start", newPosition);
   };
 
+  const handlePrev = () => {
+    if (currentTrackIdx <= 0) return;
+    loadSong(currentTrackIdx - 1);
+  };
+
+  const handleNext = () => {
+    if (currentTrackIdx >= songList.length) return;
+    loadSong(currentTrackIdx + 1);
+  };
+
   return (
     <div className={cx("player")}>
       <div className={cx("controls")}>
-        <button>
+        <button onClick={() => handlePrev()}>
           <Image
             src={`/icons/player-skip-back.svg`}
             alt="skip back"
@@ -148,7 +138,7 @@ const Player = () => {
             height={24}
           />
         </button>
-        <button>
+        <button onClick={() => handleNext()}>
           <Image
             src={`/icons/player-skip-forward.svg`}
             alt="skip back"
@@ -182,7 +172,6 @@ const Player = () => {
         </div>
         <div className={cx("time")}>{isReady ? getTime(duration) : "-:--"}</div>
       </div>
-      <div />
     </div>
   );
 };

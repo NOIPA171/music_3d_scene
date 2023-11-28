@@ -1,0 +1,22 @@
+.player-list {
+  position: absolute;
+  bottom: 3rem;
+  left: 3rem;
+  list-style-type: none;
+  li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    opacity: 0.6;
+    transition: opacity $trans-duration;
+    &.active {
+      opacity: 1;
+    }
+  }
+  span {
+    display: inline-block;
+    height: 1px;
+    width: 10px;
+    background-color: #fff;
+  }
+}
