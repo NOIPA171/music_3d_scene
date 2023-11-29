@@ -1,7 +1,6 @@
 "use client";
-
+import { useEffect, useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import Box from "./models/Box";
 import Hills from "./Hills";
 import {
   OrbitControls,
@@ -29,29 +28,37 @@ export function Chair() {
 }
 
 const Scene = () => {
+  const instance = useRef();
+  const objects = useRef();
+
+  useEffect(() => {
+    if (objects.current && objects.current.children[0] && instance.current) {
+      const sampler = new MeshSurfaceSampler(
+        objects.current.children[0]
+      ).build();
+      const _position = new Vector3();
+      const _normal = new Vector3();
+      const dummy = new Object3D();
+
+      for (let i = 0; i < 100; i++) {
+        sampler.sample(_position, _normal);
+        _normal.add(_position);
+
+        dummy.position.copy(_position);
+        dummy.lookAt(_normal);
+        dummy.updateMatrix();
+
+        instance.current.setMatrixAt(i, dummy.matrix);
+      }
+      instance.current.instanceMatrix.needsUpdate = true;
+      objects.current.add(instance.current);
+    }
+  }, []);
   return (
     <>
       <Canvas shadows>
         <OrbitControls />
-
         <Hills />
-        {/* <Box position={[-1.2, 0, 0]} />
-        <Box position={[1.2, 0, 0]} /> */}
-        <directionalLight color="red" position={[0, 0, 5]} />
-        {/* <mesh rotation-x={1}>
-          <boxGeometry args={[2, 2, 2]} />
-          <meshStandardMaterial />
-        </mesh> */}
-        <mesh
-          visible
-          userData={{ hello: "world" }}
-          position={[1, 2, 3]}
-          rotation={[Math.PI / 2, 0, 0]}
-        >
-          <sphereGeometry args={[1, 16, 16]} />
-          <meshStandardMaterial color="hotpink" transparent />
-        </mesh>
-        {/* <Chair /> */}
       </Canvas>
     </>
   );

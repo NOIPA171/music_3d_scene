@@ -1,12 +1,12 @@
 "use client";
 
 import { Canvas, useFrame } from "@react-three/fiber";
-import Box from "./models/Box";
 import {
   OrbitControls,
   useGLTF,
   MeshWobbleMaterial,
   Sampler,
+  Sky,
 } from "@react-three/drei";
 
 // MeshWobbleMaterial -> can be used for flower/plants
@@ -18,6 +18,13 @@ const Hills = () => {
   console.log("gltf", gltf);
   return (
     <>
+      {/* <Sky
+        distance={450000}
+        sunPosition={[0, 1, 0]}
+        inclination={0}
+        azimuth={0.25}
+      /> */}
+      {/* <color args={["#eee"]} attach="background" /> */}
       <ambientLight intensity={0.5} />
       {/* <pointLight position={[15, 10, 10]} castShadow /> */}
       <directionalLight
@@ -33,7 +40,7 @@ const Hills = () => {
       <group position={nodes.grass.position} rotation={nodes.grass.rotation}>
         {nodes.grass.children.map((child, idx) => (
           <mesh key={`grass_${idx}`} geometry={child.geometry} castShadow>
-            <meshStandardMaterial color={child.material.color} />
+            <MeshWobbleMaterial color={child.material.color} />
           </mesh>
         ))}
       </group>
