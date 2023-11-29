@@ -3,7 +3,7 @@ import { useEffect, useState, useRef } from "react";
 import { useGlobalAudioPlayer } from "react-use-audio-player";
 import Image from "next/image";
 import styles from "./styles.module.scss";
-import classNames from "classNames/bind";
+import classNames from "classnames/bind";
 import { usePlayer } from "@/context/PlayerProvider";
 const cx = classNames.bind(styles);
 

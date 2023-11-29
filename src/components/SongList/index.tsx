@@ -1,7 +1,7 @@
 "use client";
 import songList from "@/utils/data.json";
 import styles from "./styles.module.scss";
-import classNames from "classNames/bind";
+import classNames from "classnames/bind";
 import { usePlayer } from "@/context/PlayerProvider";
 const cx = classNames.bind(styles);
 
