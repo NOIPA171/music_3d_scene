@@ -6,7 +6,7 @@ import songList from "@/utils/data.json";
 
 const PlayerContext = createContext<PlayerProps>({
   currentTrackIdx: 0,
-  setCurrentTrackIdx: () => {},
+  currentTrack: songList[0],
   songList,
   loadSong: () => {},
   isReady: false,
@@ -16,24 +16,27 @@ const PlayerContext = createContext<PlayerProps>({
 
 const PlayerProvider = ({ children }: { children: React.ReactNode }) => {
   const [currentTrackIdx, setCurrentTrackIdx] = useState(0);
+  const [currentTrack, setCurrentTrack] = useState(songList[currentTrackIdx]);
   const { isReady, playing, duration } = useGlobalAudioPlayer();
 
   const { load } = useGlobalAudioPlayer();
 
+  const normalizeIdx = (num: number): number =>
+    (songList.length + num) % songList.length;
+
   const loadSong = (index: number, autoplay: boolean = true) => {
-    setCurrentTrackIdx(index);
-    load("/music/" + songList[index].source, {
+    const currIdx = normalizeIdx(index);
+    setCurrentTrackIdx(currIdx);
+    setCurrentTrack(songList[currIdx]);
+    load("/music/" + songList[currIdx].source, {
       autoplay,
-      onload: () => {
-        // TODO: check if updating state is necessary
-        // TODO: show spinner while it's loading
-        console.log("loaded");
-      },
+      html5: true,
       onend: () => {
         // TODO: skip to next song
-        const newIdx = songList.length % (index + 1);
+        const newIdx = normalizeIdx(currIdx + 1);
         loadSong(newIdx);
         setCurrentTrackIdx(newIdx);
+        setCurrentTrack(songList[newIdx]);
       },
     });
   };
@@ -44,7 +47,7 @@ const PlayerProvider = ({ children }: { children: React.ReactNode }) => {
 
   const values: PlayerProps = {
     currentTrackIdx,
-    setCurrentTrackIdx,
+    currentTrack,
     songList,
     loadSong,
     isReady,

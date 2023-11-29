@@ -21,7 +21,7 @@ const SongList = () => {
             active: idx === currentTrackIdx,
           })}
         >
-          {formatIndex(idx + 1)} <span /> {song.environment}
+          {formatIndex(idx + 1)} <span /> {song.song_name}
         </li>
       ))}
     </ul>

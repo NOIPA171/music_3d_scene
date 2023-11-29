@@ -19,8 +19,14 @@ const getTime = (duration: number): string => {
 
 const Player = () => {
   const { togglePlayPause, getPosition, seek } = useGlobalAudioPlayer();
-  const { loadSong, currentTrackIdx, songList, isReady, playing, duration } =
-    usePlayer();
+  const {
+    loadSong,
+    currentTrackIdx,
+    currentTrack,
+    isReady,
+    playing,
+    duration,
+  } = usePlayer();
   const [position, setPosition] = useState(0); // as in position in the track
   const [isDragging, setIsDragging] = useState(false);
   const dragRef = useRef(isDragging);
@@ -109,20 +115,10 @@ const Player = () => {
     // console.log("drag start", newPosition);
   };
 
-  const handlePrev = () => {
-    if (currentTrackIdx <= 0) return;
-    loadSong(currentTrackIdx - 1);
-  };
-
-  const handleNext = () => {
-    if (currentTrackIdx >= songList.length) return;
-    loadSong(currentTrackIdx + 1);
-  };
-
   return (
     <div className={cx("player")}>
       <div className={cx("controls")}>
-        <button onClick={() => handlePrev()}>
+        <button onClick={() => loadSong(currentTrackIdx - 1)}>
           <Image
             src={`/icons/player-skip-back.svg`}
             alt="skip back"
@@ -138,7 +134,7 @@ const Player = () => {
             height={24}
           />
         </button>
-        <button onClick={() => handleNext()}>
+        <button onClick={() => loadSong(currentTrackIdx + 1)}>
           <Image
             src={`/icons/player-skip-forward.svg`}
             alt="skip back"
@@ -147,7 +143,7 @@ const Player = () => {
           />
         </button>
       </div>
-      <div>Name of the song</div>
+      <div>{currentTrack.song_name}</div>
       <div className={cx("progress-bar")}>
         <div className={cx("time")}>{isReady ? getTime(position) : "-:--"}</div>
         <div

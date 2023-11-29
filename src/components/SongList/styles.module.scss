@@ -11,6 +11,7 @@
     transition: opacity $trans-duration;
     &.active {
       opacity: 1;
+      font-weight: 400;
     }
   }
   span {
