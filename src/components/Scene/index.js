@@ -9,6 +9,10 @@ import {
   Sampler,
 } from "@react-three/drei";
 
+import { MeshSurfaceSampler } from "three/examples/jsm/Addons.js";
+
+import Test from "./Test";
+
 // MeshWobbleMaterial -> can be used for flower/plants
 
 export function Chair() {
@@ -56,9 +60,47 @@ const Scene = () => {
   }, []);
   return (
     <>
-      <Canvas shadows>
+      <Canvas
+        shadows
+        orthographic
+        camera={{
+          fov: 45,
+          zoom: 100,
+          near: 0.1,
+          far: 200,
+          position: [3, 2, 6],
+        }}
+      >
+        <ambientLight intensity={0.5} />
         <OrbitControls />
         <Hills />
+        {/* <Test /> */}
+
+        {/* <Sampler
+          // weight={"normal"} // the name of the attribute to be used as sampling weight
+          // transform={({ dummy, sampledMesh, position, normal }) => {
+          //   dummy.scale.setScalar(Math.random() * 0.1);
+
+          //   const worldPosition = sampledMesh.localToWorld(position);
+          //   dummy.position.copy(worldPosition);
+
+          //   dummy.lookAt(normal.clone().add(position));
+          //   dummy.rotation.y += Math.random() - 0.5 * (Math.PI * 0.5);
+          //   dummy.rotation.z += Math.random() - 0.5 * (Math.PI * 0.5);
+          //   dummy.rotation.x += Math.random() - 0.5 * (Math.PI * 0.5);
+          // }} // a function that transforms each instance given a sample. See the examples for more.
+          count={16} // Number of samples
+        >
+          <mesh> 
+            <sphereGeometry args={[2]} />
+            <meshNormalMaterial />
+          </mesh>
+
+          <instancedMesh args={[null, null, 1000]}>
+            <sphereGeometry args={[0.1]} />
+            <meshNormalMaterial />
+          </instancedMesh>
+        </Sampler> */}
       </Canvas>
     </>
   );

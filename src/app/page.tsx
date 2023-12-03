@@ -6,7 +6,7 @@ import PlayerProvider from "@/context/PlayerProvider";
 export default async function Home() {
   return (
     <PlayerProvider>
-      {/* <Scene /> */}
+      <Scene />
       <Player />
       <SongList />
     </PlayerProvider>

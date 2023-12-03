@@ -7,6 +7,15 @@ const nextConfig = {
     includePaths: [path.join(__dirname, "styles")],
     prependData: `@import "@/styles/variables.scss";`,
   },
+  webpack: (config, options) => {
+    config.module.rules.push({
+      test: /\.(glsl|vs|fs|vert|frag)$/,
+      // use: ["raw-loader", "glslify-loader"],
+      type: "asset/source",
+    });
+
+    return config;
+  },
 };
 
 module.exports = nextConfig;

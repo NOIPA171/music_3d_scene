@@ -20,7 +20,8 @@
     "react-dom": "^18",
     "react-use-audio-player": "^2.2.0",
     "sass": "^1.69.5",
-    "three": "^0.158.0"
+    "three": "^0.158.0",
+    "three-custom-shader-material": "^5.4.0"
   },
   "devDependencies": {
     "@types/node": "^20",
