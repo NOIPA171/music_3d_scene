@@ -19,63 +19,6 @@ import vertexShader from "./vertex.glsl";
 const uWindVelocity = 1.5;
 const sceneFile = "/hills_scene.glb";
 
-const Character = () => {
-  const { nodes, materials, scene, animations } = useGLTF("character.glb");
-  const { ref, actions, names } = useAnimations(animations);
-  console.log("character", nodes, materials, scene, actions, names);
-
-  useEffect(() => {
-    actions[names[0]].reset().play();
-  }, [actions, names]);
-
-  return (
-    <>
-      <group ref={ref} position={[0, 0.45, 0]} scale={0.0078}>
-        <primitive object={nodes.mixamorigHips_34} />
-        <skinnedMesh
-          castShadow
-          receiveShadow
-          material={materials["Material.001"]}
-          geometry={nodes.Body.geometry}
-          skeleton={nodes.Body.skeleton}
-        />
-        {/* <mesh
-          receiveShadow
-          geometry={nodes.Face.geometry}
-          material={materials.face}
-        ></mesh>
-        <mesh
-          receiveShadow
-          geometry={nodes.Hair.geometry}
-          material={materials.hair}
-        ></mesh> */}
-      </group>
-    </>
-  );
-};
-
-const TableBook = () => {
-  const { nodes } = useGLTF(sceneFile);
-  return (
-    <group
-      position={nodes.tableBook.position}
-      rotation={nodes.tableBook.rotation}
-      scale={nodes.tableBook.scale}
-    >
-      {nodes.tableBook.children.map((child, idx) => (
-        <mesh
-          key={`tableBook_${idx}`}
-          geometry={child.geometry}
-          castShadow
-          receiveShadow
-        >
-          <meshStandardMaterial color={child.material.color} />
-        </mesh>
-      ))}
-    </group>
-  );
-};
-
 const Books = () => {
   const { nodes } = useGLTF(sceneFile);
   return (
@@ -110,22 +53,6 @@ const Rocks = () => {
       receiveShadow
     >
       <meshStandardMaterial color={materials.rock.color} />
-    </mesh>
-  );
-};
-
-const Table = () => {
-  const { nodes, materials } = useGLTF(sceneFile);
-  return (
-    <mesh
-      geometry={nodes.table.geometry}
-      rotation={nodes.table.rotation}
-      position={nodes.table.position}
-      scale={nodes.table.scale}
-      castShadow
-      receiveShadow
-    >
-      <meshStandardMaterial color={materials.table.color} />
     </mesh>
   );
 };
@@ -244,14 +171,6 @@ const Grass = () => {
 
 const HillsScene = () => {
   const { nodes, materials, scene, ...gltf } = useGLTF(sceneFile);
-  const grassMaterials = useRef([]);
-
-  useFrame((state, delta) => {
-    if (!grassMaterials.current.length) return;
-    grassMaterials.current.forEach(
-      (elm) => (elm.uniforms.uTime.value += delta)
-    );
-  });
 
   console.log("nodes", nodes);
   console.log("materials", materials);
@@ -266,40 +185,13 @@ const HillsScene = () => {
         inclination={0}
         azimuth={0.25}
       /> */}
-      <color args={["#eee"]} attach="background" />
+      {/* <fog attach="fog" color="#8FA87C" near={0.1} far={15} /> */}
       <fog attach="fog" color="yellow" near={0.1} far={20} />
-      <directionalLight
-        castShadow
-        position={[2.5, 8, 5]}
-        // shadow-mapSize={[1024, 1024]}
-        shadow-mapSize={[2048, 2048]}
-        radius={2}
-      ></directionalLight>
-      <Character />
-      <TableBook />
       <Books />
       <Tree />
       <Flowers />
       <Grass />
-      <Table />
       <Rocks />
-      <group>
-        <mesh
-          geometry={nodes.rockFlat.geometry}
-          position={nodes.rockFlat.position}
-          scale={nodes.rockFlat.scale}
-        >
-          <meshStandardMaterial color={materials.rock_base.color} />
-        </mesh>
-        <mesh
-          geometry={nodes.rockFlat001.geometry}
-          position={nodes.rockFlat001.position}
-          scale={nodes.rockFlat001.scale}
-          receiveShadow
-        >
-          <meshStandardMaterial color={nodes.rockFlat001.material.color} />
-        </mesh>
-      </group>
     </>
   );
 };
