@@ -3,18 +3,11 @@
 import { useEffect, useRef } from "react";
 import { MeshStandardMaterial } from "three";
 import { useFrame, extend } from "@react-three/fiber";
-import {
-  useGLTF,
-  MeshWobbleMaterial,
-  Sampler,
-  Sky,
-  shaderMaterial,
-  useAnimations,
-} from "@react-three/drei";
+import { useGLTF, Sky } from "@react-three/drei";
 import { RGBADepthPacking } from "three";
 import CustomShaderMaterial from "three-custom-shader-material";
 
-import vertexShader from "./shaders/grassVertex.glsl";
+import vertexShader from "./shaders/swayVertex.glsl";
 
 const uWindVelocity = 1.5;
 const sceneFile = "/hills_scene.glb";
@@ -61,10 +54,10 @@ const Flowers = () => {
   const { nodes } = useGLTF(sceneFile);
   const flowerMaterials = useRef([]);
 
-  useFrame((state, delta) => {
+  useFrame((state) => {
     if (!flowerMaterials.current.length) return;
     flowerMaterials.current.forEach(
-      (elm) => (elm.uniforms.uTime.value += delta)
+      (elm) => (elm.uniforms.uTime.value = state.clock.elapsedTime)
     );
   });
 
@@ -82,7 +75,7 @@ const Flowers = () => {
           receiveShadow
         >
           <CustomShaderMaterial
-            ref={(elm) => flowerMaterials.current.push(elm)}
+            ref={(elm) => (flowerMaterials.current[idx] = elm)}
             baseMaterial={MeshStandardMaterial}
             vertexShader={vertexShader}
             // silent parameter to true disables the default warning if needed
@@ -106,10 +99,10 @@ const Grass = () => {
   const { nodes } = useGLTF(sceneFile);
   const grassMaterials = useRef([]);
 
-  useFrame((state, delta) => {
+  useFrame((state) => {
     if (!grassMaterials.current.length) return;
     grassMaterials.current.forEach(
-      (elm) => (elm.uniforms.uTime.value += delta)
+      (elm) => (elm.uniforms.uTime.value = state.clock.elapsedTime)
     );
   });
 
@@ -123,7 +116,7 @@ const Grass = () => {
           receiveShadow
         >
           <CustomShaderMaterial
-            ref={(elm) => grassMaterials.current.push(elm)}
+            ref={(elm) => (grassMaterials.current[idx] = elm)}
             baseMaterial={MeshStandardMaterial}
             vertexShader={vertexShader}
             // silent parameter to true disables the default warning if needed

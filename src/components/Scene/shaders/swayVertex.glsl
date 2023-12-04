@@ -6,7 +6,7 @@ void main()
 {
     vec4 modelPosition = modelMatrix * vec4(position, 1.0);
 
-    float elevation = sin((modelPosition.y * modelPosition.y * uBend) * sin(uTime * uWindVelocity));
+    float elevation = sin((pow(modelPosition.y, 2.0) * uBend) * sin(uTime * uWindVelocity));
 
     modelPosition.z += elevation;
 

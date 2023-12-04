@@ -6,10 +6,12 @@ import { OrbitControls } from "@react-three/drei";
 
 import SceneBase from "./SceneBase";
 import Sea from "./Sea";
+import { usePlayer } from "@/context/PlayerProvider";
 
 // MeshWobbleMaterial -> can be used for flower/plants
 
 const Scene = () => {
+  const { currentTrack } = usePlayer();
   return (
     <>
       <Canvas
@@ -33,7 +35,8 @@ const Scene = () => {
         ></directionalLight>
         <OrbitControls />
         <SceneBase />
-        <Hills />
+        {/* {currentTrack.environment === "hills" && <Hills />} */}
+        {/* {currentTrack.environment === "sea" && <Sea />} */}
         <Sea />
       </Canvas>
     </>
