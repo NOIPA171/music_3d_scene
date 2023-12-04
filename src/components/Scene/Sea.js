@@ -1,9 +1,14 @@
 "use client";
 
-import { useLayoutEffect, useRef } from "react";
-import { MeshStandardMaterial, DoubleSide, SpotLightHelper } from "three";
+import { useLayoutEffect, useRef, useEffect } from "react";
+import {
+  MeshStandardMaterial,
+  DoubleSide,
+  SpotLightHelper,
+  Object3D,
+} from "three";
 import { useFrame, extend } from "@react-three/fiber";
-import { useGLTF } from "@react-three/drei";
+import { useGLTF, useAnimations } from "@react-three/drei";
 import CustomShaderMaterial from "three-custom-shader-material";
 import vertexShader from "./shaders/seaweedVertex.glsl";
 import swayVertexShader from "./shaders/swayVertex.glsl";
@@ -11,6 +16,40 @@ import swayVertexShader from "./shaders/swayVertex.glsl";
 const uWindVelocity = 1.5;
 const kelpBend = 0.01;
 const sceneFile = "/sea_scene.glb";
+
+const Fish = () => {
+  const { nodes, animations } = useGLTF("fish.glb");
+  const { ref, actions, names } = useAnimations(animations);
+  console.log("fish", nodes, actions, names);
+
+  useEffect(() => {
+    actions[names[0]].reset().play();
+  }, [actions, names]);
+
+  useFrame((state) => {
+    ref.current.rotation.y = state.clock.elapsedTime * -0.1;
+  });
+
+  return (
+    <>
+      <group ref={ref} rotation={[0, Math.PI / 2, 0]}>
+        <primitive object={nodes.Armature} position={[3, 1, 0]} scale={10} />
+        {/* Pivot */}
+        <primitive object={new Object3D()} />
+        {nodes.Fish.children.map((child, idx) => (
+          <skinnedMesh
+            key={`fish_${idx}`}
+            castShadow
+            receiveShadow
+            material={child.material}
+            geometry={child.geometry}
+            skeleton={child.skeleton}
+          />
+        ))}
+      </group>
+    </>
+  );
+};
 
 const Rocks = () => {
   const { nodes } = useGLTF(sceneFile);
@@ -249,6 +288,7 @@ const SeaScene = () => {
       <CoralFern />
       <Corals />
       <CoralFloor />
+      <Fish />
     </>
   );
 };
