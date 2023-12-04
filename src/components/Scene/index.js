@@ -1,7 +1,7 @@
 "use client";
 import { Canvas } from "@react-three/fiber";
 import Hills from "./Hills";
-import { OrbitControls } from "@react-three/drei";
+import { OrbitControls, OrthographicCamera } from "@react-three/drei";
 
 import SceneBase from "./SceneBase";
 import Sea from "./Sea";
@@ -25,7 +25,7 @@ const Scene = () => {
           zoom: 150,
           near: 0.1,
           far: 1000,
-          position: [-3, 2, -2.2],
+          position: [-3, 3, -2.2],
         }}
       >
         <ambientLight intensity={0.4} />

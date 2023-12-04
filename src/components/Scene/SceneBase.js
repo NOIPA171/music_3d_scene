@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { useFrame, useThree } from "@react-three/fiber";
 import { useGLTF, useAnimations } from "@react-three/drei";
 import { usePlayer } from "@/context/PlayerProvider";
 import trackMap from "@/utils/trackMap.ts";
@@ -140,6 +141,13 @@ const SceneBase = () => {
   const {
     currentTrack: { environment },
   } = usePlayer();
+
+  const { camera } = useThree();
+
+  useFrame(() => {
+    camera.lookAt(0, 0.5, 0);
+    camera.updateProjectionMatrix();
+  });
 
   const trackData = trackMap[environment];
 
