@@ -1,5 +1,5 @@
 "use client";
-import songList from "@/utils/data.json";
+import songList from "@/utils/data";
 import styles from "./styles.module.scss";
 import classNames from "classnames/bind";
 import { usePlayer } from "@/context/PlayerProvider";
@@ -10,13 +10,13 @@ const formatIndex = (num: number) => {
 };
 
 const SongList = () => {
-  const { loadSong, currentTrackIdx } = usePlayer();
+  const { loadSong, currentTrackIdx, playing } = usePlayer();
   return (
     <ul className={cx("player-list")}>
       {songList.map((song, idx) => (
         <li
           key={idx}
-          onClick={() => loadSong(idx)}
+          onClick={() => loadSong(idx, playing)}
           className={cx({
             active: idx === currentTrackIdx,
           })}

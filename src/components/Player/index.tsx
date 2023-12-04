@@ -118,7 +118,7 @@ const Player = () => {
   return (
     <div className={cx("player")}>
       <div className={cx("controls")}>
-        <button onClick={() => loadSong(currentTrackIdx - 1)}>
+        <button onClick={() => loadSong(currentTrackIdx - 1, playing)}>
           <Image
             src={`/icons/player-skip-back.svg`}
             alt="skip back"
@@ -134,7 +134,7 @@ const Player = () => {
             height={24}
           />
         </button>
-        <button onClick={() => loadSong(currentTrackIdx + 1)}>
+        <button onClick={() => loadSong(currentTrackIdx + 1, playing)}>
           <Image
             src={`/icons/player-skip-forward.svg`}
             alt="skip back"

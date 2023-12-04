@@ -2,7 +2,8 @@
 
 import { createContext, useContext, useState, useEffect } from "react";
 import { useGlobalAudioPlayer } from "react-use-audio-player";
-import songList from "@/utils/data.json";
+import songList from "@/utils/data";
+import trackMap from "@/utils/trackMap";
 
 const PlayerContext = createContext<PlayerProps>({
   currentTrackIdx: 0,
@@ -44,6 +45,12 @@ const PlayerProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     loadSong(currentTrackIdx, false);
   }, []);
+
+  useEffect(() => {
+    const colors = trackMap[currentTrack.environment].bgColor;
+    document.body.style.setProperty("--background-start-rgb", colors[0]);
+    document.body.style.setProperty("--background-end-rgb", colors[1]);
+  }, [currentTrack.environment]);
 
   const values: PlayerProps = {
     currentTrackIdx,

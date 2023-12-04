@@ -2,6 +2,8 @@
 
 import { useEffect } from "react";
 import { useGLTF, useAnimations } from "@react-three/drei";
+import { usePlayer } from "@/context/PlayerProvider";
+import trackMap from "@/utils/trackMap.ts";
 
 const sceneFile = "/scene_base.glb";
 
@@ -139,10 +141,11 @@ const Table = () => {
 const SceneBase = () => {
   const { nodes, materials } = useGLTF(sceneFile);
 
-  // console.log("nodes", nodes);
-  // console.log("materials", materials);
-  // console.log("scene", scene);
-  // console.log("gltf", gltf);
+  const {
+    currentTrack: { environment },
+  } = usePlayer();
+
+  const trackData = trackMap[environment];
 
   return (
     <>
@@ -158,8 +161,7 @@ const SceneBase = () => {
           position={nodes.rockFlat.position}
           scale={nodes.rockFlat.scale}
         >
-          {/* <meshStandardMaterial color={materials.rock_base.color} /> */}
-          <meshStandardMaterial color={"#7a7f82"} />
+          <meshStandardMaterial color={trackData.baseRock.baseColor} />
         </mesh>
         <mesh
           geometry={nodes.rockFlat001.geometry}
@@ -167,8 +169,7 @@ const SceneBase = () => {
           scale={nodes.rockFlat001.scale}
           receiveShadow
         >
-          {/* <meshStandardMaterial color={nodes.rockFlat001.material.color} /> */}
-          <meshStandardMaterial color={"#d6d2c3"} />
+          <meshStandardMaterial color={trackData.baseRock.topColor} />
         </mesh>
       </group>
     </>
