@@ -43,9 +43,11 @@ const Scene = () => {
           near={0.1}
           far={trackData.fog.far}
         />
-        {environment === "hills" && <Hills />}
-        {environment === "sea" && <Sea />}
-        <SceneBase />
+        <group position={[0.2, -0.3, 0]}>
+          {environment === "hills" && <Hills />}
+          {environment === "sea" && <Sea />}
+          <SceneBase />
+        </group>
       </Canvas>
     </>
   );

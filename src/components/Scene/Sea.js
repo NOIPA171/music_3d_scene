@@ -15,7 +15,7 @@ const sceneFile = "/sea_scene.glb";
 const Fish = () => {
   const { nodes, animations } = useGLTF("fish.glb");
   const { ref, actions, names } = useAnimations(animations);
-  console.log("fish", nodes, actions, names);
+  // console.log("fish", nodes, actions, names);
 
   useEffect(() => {
     actions[names[0]].reset().play();
