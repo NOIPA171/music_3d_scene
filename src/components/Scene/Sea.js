@@ -1,13 +1,8 @@
 "use client";
 
 import { useLayoutEffect, useRef, useEffect } from "react";
-import {
-  MeshStandardMaterial,
-  DoubleSide,
-  SpotLightHelper,
-  Object3D,
-} from "three";
-import { useFrame, extend } from "@react-three/fiber";
+import { MeshStandardMaterial, DoubleSide, Object3D } from "three";
+import { useFrame } from "@react-three/fiber";
 import { useGLTF, useAnimations } from "@react-three/drei";
 import CustomShaderMaterial from "three-custom-shader-material";
 import vertexShader from "./shaders/seaweedVertex.glsl";
@@ -83,10 +78,7 @@ const CoralFern = () => {
       position={nodes.coral_fern.position}
       rotation={nodes.coral_fern.rotation}
     >
-      <meshStandardMaterial
-        // color={nodes.coral_fern.material.color}
-        color="#fa70ca"
-      />
+      <meshStandardMaterial color="#fa70ca" />
     </mesh>
   );
 };
@@ -239,20 +231,15 @@ const SmallKelp = ({ rotationY = 0, position }) => {
 };
 
 const SeaScene = () => {
-  const { nodes, materials, scene, ...gltf } = useGLTF(sceneFile);
   const lights = useRef([]);
 
   useLayoutEffect(() => {
+    // update light
     if (!lights.current?.length) return;
     lights.current.forEach((light) => {
       light.target.updateMatrixWorld();
     });
   }, []);
-
-  console.log("nodes", nodes);
-  console.log("materials", materials);
-  console.log("scene", scene);
-  console.log("gltf", gltf);
 
   return (
     <>

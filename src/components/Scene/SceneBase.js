@@ -50,11 +50,7 @@ const Lamp = () => {
           castShadow
           receiveShadow
         >
-          <meshStandardMaterial
-            color={child.material.color}
-            // transparent={child.material.opacity !== 1}
-            // opacity={child.material.opacity}
-          />
+          <meshStandardMaterial color={child.material.color} />
         </mesh>
       ))}
       <pointLight intensity={1.5} position={[0, 8, 0]} color="#d1be30" />
@@ -139,7 +135,7 @@ const Table = () => {
 };
 
 const SceneBase = () => {
-  const { nodes, materials } = useGLTF(sceneFile);
+  const { nodes } = useGLTF(sceneFile);
 
   const {
     currentTrack: { environment },

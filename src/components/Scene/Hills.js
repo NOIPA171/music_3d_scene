@@ -78,16 +78,12 @@ const Flowers = () => {
             ref={(elm) => (flowerMaterials.current[idx] = elm)}
             baseMaterial={MeshStandardMaterial}
             vertexShader={vertexShader}
-            // silent parameter to true disables the default warning if needed
-            // silent
             uniforms={{
               uBend: { value: 0.05 },
               uTime: { value: 0 },
               uWindVelocity: { value: uWindVelocity },
             }}
-            // flatShading
             color={child.material.color}
-            // ...
           />
         </mesh>
       ))}
@@ -119,14 +115,11 @@ const Grass = () => {
             ref={(elm) => (grassMaterials.current[idx] = elm)}
             baseMaterial={MeshStandardMaterial}
             vertexShader={vertexShader}
-            // silent parameter to true disables the default warning if needed
-            // silent
             uniforms={{
               uBend: { value: 1 },
               uTime: { value: 0 },
               uWindVelocity: { value: uWindVelocity },
             }}
-            // flatShading
             color={child.material.color}
             // ...
           />
@@ -137,7 +130,7 @@ const Grass = () => {
 };
 
 const HillsScene = () => {
-  const { nodes, materials, scene, ...gltf } = useGLTF(sceneFile);
+  const { nodes, materials, scene } = useGLTF(sceneFile);
 
   // console.log("nodes", nodes);
   // console.log("materials", materials);
@@ -146,13 +139,6 @@ const HillsScene = () => {
 
   return (
     <>
-      {/* <Sky
-        distance={450000}
-        sunPosition={[0, 1, 0]}
-        inclination={0}
-        azimuth={0.25}
-      /> */}
-      {/* <fog attach="fog" color="#8FA87C" near={0.1} far={15} /> */}
       <Tree />
       <Flowers />
       <Grass />

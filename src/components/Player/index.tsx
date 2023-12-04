@@ -112,7 +112,6 @@ const Player = () => {
     const newPosition = (location / rect.width) * duration;
     posRef.current = newPosition;
     setPosition(newPosition);
-    // console.log("drag start", newPosition);
   };
 
   return (

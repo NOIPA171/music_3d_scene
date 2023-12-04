@@ -33,7 +33,6 @@ const PlayerProvider = ({ children }: { children: React.ReactNode }) => {
       autoplay,
       html5: true,
       onend: () => {
-        // TODO: skip to next song
         const newIdx = normalizeIdx(currIdx + 1);
         loadSong(newIdx);
         setCurrentTrackIdx(newIdx);
@@ -47,6 +46,7 @@ const PlayerProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   useEffect(() => {
+    // change bg on environment change
     const colors = trackMap[currentTrack.environment].bgColor;
     document.body.style.setProperty("--background-start-rgb", colors[0]);
     document.body.style.setProperty("--background-end-rgb", colors[1]);

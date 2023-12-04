@@ -13,6 +13,7 @@ const SongList = () => {
   const { loadSong, currentTrackIdx, playing } = usePlayer();
   return (
     <ul className={cx("player-list")}>
+      {/* TODO: use button */}
       {songList.map((song, idx) => (
         <li
           key={idx}

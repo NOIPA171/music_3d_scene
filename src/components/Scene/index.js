@@ -37,7 +37,6 @@ const Scene = () => {
           radius={2}
         ></directionalLight>
         <OrbitControls />
-        {/* <color args={[trackData.bgColor]} attach="background" /> */}
         <fog
           attach="fog"
           color={trackData.fog.color}
