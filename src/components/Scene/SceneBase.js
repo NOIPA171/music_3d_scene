@@ -1,23 +1,12 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { MeshStandardMaterial } from "three";
-import { useFrame, extend } from "@react-three/fiber";
-import {
-  useGLTF,
-  MeshWobbleMaterial,
-  Sampler,
-  Sky,
-  shaderMaterial,
-  useAnimations,
-} from "@react-three/drei";
-import { RGBADepthPacking } from "three";
-import CustomShaderMaterial from "three-custom-shader-material";
+import { useEffect } from "react";
+import { useGLTF, useAnimations } from "@react-three/drei";
 
 const sceneFile = "/scene_base.glb";
 
 const Character = () => {
-  const { nodes, materials, scene, animations } = useGLTF("character.glb");
+  const { nodes, animations } = useGLTF("character.glb");
   const { ref, actions, names } = useAnimations(animations);
   // console.log("character", nodes, materials, scene, actions, names);
 
@@ -66,7 +55,7 @@ const Lamp = () => {
           />
         </mesh>
       ))}
-      <pointLight intensity={0.5} position={[0, 8, 0]} />
+      <pointLight intensity={1.5} position={[0, 8, 0]} color="#d1be30" />
     </group>
   );
 };
@@ -148,15 +137,7 @@ const Table = () => {
 };
 
 const SceneBase = () => {
-  const { nodes, materials, scene, ...gltf } = useGLTF(sceneFile);
-  const grassMaterials = useRef([]);
-
-  useFrame((state, delta) => {
-    if (!grassMaterials.current.length) return;
-    grassMaterials.current.forEach(
-      (elm) => (elm.uniforms.uTime.value += delta)
-    );
-  });
+  const { nodes, materials } = useGLTF(sceneFile);
 
   // console.log("nodes", nodes);
   // console.log("materials", materials);
@@ -171,14 +152,14 @@ const SceneBase = () => {
       <TableBook />
       <Table />
       <Chair />
-      <color args={["#8FA87C"]} attach="background" />
       <group>
         <mesh
           geometry={nodes.rockFlat.geometry}
           position={nodes.rockFlat.position}
           scale={nodes.rockFlat.scale}
         >
-          <meshStandardMaterial color={materials.rock_base.color} />
+          {/* <meshStandardMaterial color={materials.rock_base.color} /> */}
+          <meshStandardMaterial color={"#7a7f82"} />
         </mesh>
         <mesh
           geometry={nodes.rockFlat001.geometry}
@@ -186,13 +167,10 @@ const SceneBase = () => {
           scale={nodes.rockFlat001.scale}
           receiveShadow
         >
-          <meshStandardMaterial color={nodes.rockFlat001.material.color} />
+          {/* <meshStandardMaterial color={nodes.rockFlat001.material.color} /> */}
+          <meshStandardMaterial color={"#d6d2c3"} />
         </mesh>
       </group>
-      {/* <mesh rotation={[Math.PI / -2, 0, 0]} position={[0, -0.37, 0]}>
-        <planeGeometry args={[20, 20]} />
-        <meshStandardMaterial color={"red"} />
-      </mesh> */}
     </>
   );
 };

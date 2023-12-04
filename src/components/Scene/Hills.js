@@ -153,7 +153,6 @@ const HillsScene = () => {
         azimuth={0.25}
       /> */}
       {/* <fog attach="fog" color="#8FA87C" near={0.1} far={15} /> */}
-      <fog attach="fog" color="yellow" near={0.1} far={20} />
       <Tree />
       <Flowers />
       <Grass />

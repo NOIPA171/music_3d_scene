@@ -1,23 +1,70 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { MeshStandardMaterial, DoubleSide } from "three";
+import { useLayoutEffect, useRef } from "react";
+import { MeshStandardMaterial, DoubleSide, SpotLightHelper } from "three";
 import { useFrame, extend } from "@react-three/fiber";
-import {
-  useGLTF,
-  Sampler,
-  Sky,
-  shaderMaterial,
-  useAnimations,
-} from "@react-three/drei";
-import { RGBADepthPacking } from "three";
+import { useGLTF } from "@react-three/drei";
 import CustomShaderMaterial from "three-custom-shader-material";
 import vertexShader from "./shaders/seaweedVertex.glsl";
 import swayVertexShader from "./shaders/swayVertex.glsl";
 
 const uWindVelocity = 1.5;
 const kelpBend = 0.01;
-const sceneFile = "/kelp.glb";
+const sceneFile = "/sea_scene.glb";
+
+const Rocks = () => {
+  const { nodes } = useGLTF(sceneFile);
+  return (
+    <mesh geometry={nodes.sea_rocks.geometry}>
+      <meshStandardMaterial color={nodes.sea_rocks.material.color} />
+    </mesh>
+  );
+};
+
+const CoralFloor = () => {
+  const { nodes } = useGLTF(sceneFile);
+  return (
+    <mesh
+      geometry={nodes.coral_floor.geometry}
+      scale={nodes.coral_floor.scale}
+      position={nodes.coral_floor.position}
+      rotation={nodes.coral_floor.rotation}
+    >
+      <meshStandardMaterial color="#7365c2" />
+    </mesh>
+  );
+};
+
+const CoralFern = () => {
+  const { nodes } = useGLTF(sceneFile);
+  return (
+    <mesh
+      geometry={nodes.coral_fern.geometry}
+      scale={nodes.coral_fern.scale}
+      position={nodes.coral_fern.position}
+      rotation={nodes.coral_fern.rotation}
+    >
+      <meshStandardMaterial
+        // color={nodes.coral_fern.material.color}
+        color="#fa70ca"
+      />
+    </mesh>
+  );
+};
+
+const Corals = () => {
+  const { nodes } = useGLTF(sceneFile);
+  return (
+    <mesh
+      geometry={nodes.coral.geometry}
+      scale={nodes.coral.scale}
+      position={nodes.coral.position}
+      rotation={nodes.coral.rotation}
+    >
+      <meshStandardMaterial color="#ff7045" />
+    </mesh>
+  );
+};
 
 const KelpLeaves = ({ rotation, position, node }) => {
   const leavesMaterial = useRef();
@@ -34,7 +81,6 @@ const KelpLeaves = ({ rotation, position, node }) => {
       castShadow
       receiveShadow
       position={position}
-      scale={node.scale}
       rotation={rotation}
     >
       <CustomShaderMaterial
@@ -57,17 +103,17 @@ const KelpLeaves = ({ rotation, position, node }) => {
   );
 };
 
-const Kelp = ({ rotationY = 0, position, scale = 1 }) => {
+const BigKelp = ({ rotationY = 0, position }) => {
   const { nodes } = useGLTF(sceneFile);
   const stemMaterial = useRef();
 
-  useFrame((state, delta) => {
+  useFrame((state) => {
     if (!stemMaterial.current) return;
-    stemMaterial.current.uniforms.uTime.value += delta;
+    stemMaterial.current.uniforms.uTime.value = state.clock.elapsedTime;
   });
 
   return (
-    <group scale={scale}>
+    <group>
       <KelpLeaves
         position={position}
         node={nodes.leaves001}
@@ -88,7 +134,54 @@ const Kelp = ({ rotationY = 0, position, scale = 1 }) => {
         castShadow
         receiveShadow
         position={position}
-        scale={nodes.stem.scale}
+      >
+        <CustomShaderMaterial
+          ref={stemMaterial}
+          baseMaterial={MeshStandardMaterial}
+          vertexShader={swayVertexShader}
+          uniforms={{
+            uBend: { value: kelpBend },
+            uTime: { value: 0 },
+            uWindVelocity: { value: uWindVelocity },
+          }}
+          color="green"
+        />
+      </mesh>
+    </group>
+  );
+};
+
+const SmallKelp = ({ rotationY = 0, position }) => {
+  const { nodes } = useGLTF(sceneFile);
+  const stemMaterial = useRef();
+
+  useFrame((state) => {
+    if (!stemMaterial.current) return;
+    stemMaterial.current.uniforms.uTime.value = state.clock.elapsedTime;
+  });
+
+  return (
+    <group>
+      <KelpLeaves
+        position={position}
+        node={nodes.sm_leaves}
+        rotation={[0, rotationY, 0]}
+      />
+      <KelpLeaves
+        position={position}
+        rotation={[0, Math.PI / 2 + rotationY, 0]}
+        node={nodes.sm_leaves001}
+      />
+      <KelpLeaves
+        position={position}
+        rotation={[0, Math.PI * 1.3 + rotationY, 0]}
+        node={nodes.sm_leaves002}
+      />
+      <mesh
+        geometry={nodes.sm_stem.geometry}
+        castShadow
+        receiveShadow
+        position={position}
       >
         <CustomShaderMaterial
           ref={stemMaterial}
@@ -108,6 +201,14 @@ const Kelp = ({ rotationY = 0, position, scale = 1 }) => {
 
 const SeaScene = () => {
   const { nodes, materials, scene, ...gltf } = useGLTF(sceneFile);
+  const lights = useRef([]);
+
+  useLayoutEffect(() => {
+    if (!lights.current?.length) return;
+    lights.current.forEach((light) => {
+      light.target.updateMatrixWorld();
+    });
+  }, []);
 
   console.log("nodes", nodes);
   console.log("materials", materials);
@@ -116,11 +217,38 @@ const SeaScene = () => {
 
   return (
     <>
-      {/* <fog attach="fog" color="yellow" near={0.1} far={20} /> */}
-      <fog attach="fog" color="blue" near={0.1} far={20} />
-      <Kelp position={[1, 0, 0]} />
-      <Kelp position={[1.5, 0, 0.8]} rotationY={Math.PI} />
-      <Kelp position={[-1, 0, 0]} rotationY={Math.PI / 2} />
+      <spotLight
+        ref={(elm) => (lights.current[0] = elm)}
+        castShadow
+        decay={2}
+        penumbra={1}
+        angle={Math.PI / 20}
+        color="#6ee6f5"
+        position={[3.5, 5, 5]}
+        intensity={150}
+        target-position={[1.5, 0, 0]}
+      ></spotLight>
+      <spotLight
+        ref={(elm) => (lights.current[1] = elm)}
+        castShadow
+        decay={2}
+        penumbra={1}
+        angle={Math.PI / 20}
+        color="#6ee6f5"
+        position={[0.75, 5, 5]}
+        intensity={150}
+        target-position={[-1.25, 0, 0]}
+      ></spotLight>
+      <BigKelp position={[1, 0, 0]} />
+      <BigKelp position={[1.7, 0, 0.75]} rotationY={Math.PI} />
+      <BigKelp position={[-1.2, 0, -0.1]} rotationY={Math.PI / 2} />
+      <SmallKelp position={[1.3, 0, -0.5]} />
+      <SmallKelp position={[-1, 0, 0.6]} rotationY={Math.PI / 3} />
+      <SmallKelp position={[1.1, 0, 0.8]} rotationY={Math.PI / 4} />
+      <Rocks />
+      <CoralFern />
+      <Corals />
+      <CoralFloor />
     </>
   );
 };
