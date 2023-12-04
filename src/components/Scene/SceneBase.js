@@ -14,15 +14,12 @@ import {
 import { RGBADepthPacking } from "three";
 import CustomShaderMaterial from "three-custom-shader-material";
 
-import vertexShader from "./vertex.glsl";
-
-const uWindVelocity = 1.5;
 const sceneFile = "/scene_base.glb";
 
 const Character = () => {
   const { nodes, materials, scene, animations } = useGLTF("character.glb");
   const { ref, actions, names } = useAnimations(animations);
-  console.log("character", nodes, materials, scene, actions, names);
+  // console.log("character", nodes, materials, scene, actions, names);
 
   useEffect(() => {
     actions[names[0]].reset().play();
@@ -32,23 +29,16 @@ const Character = () => {
     <>
       <group ref={ref} position={[0, 0.44, -0.05]} scale={0.0078}>
         <primitive object={nodes.mixamorigHips_34} />
-        <skinnedMesh
-          castShadow
-          receiveShadow
-          material={materials["Material.001"]}
-          geometry={nodes.Body.geometry}
-          skeleton={nodes.Body.skeleton}
-        />
-        {/* <mesh
-          receiveShadow
-          geometry={nodes.Face.geometry}
-          material={materials.face}
-        ></mesh>
-        <mesh
-          receiveShadow
-          geometry={nodes.Hair.geometry}
-          material={materials.hair}
-        ></mesh> */}
+        {nodes.Body.children.map((child, idx) => (
+          <skinnedMesh
+            key={`char_${idx}`}
+            castShadow
+            receiveShadow
+            material={child.material}
+            geometry={child.geometry}
+            skeleton={child.skeleton}
+          />
+        ))}
       </group>
     </>
   );
@@ -71,12 +61,34 @@ const Lamp = () => {
         >
           <meshStandardMaterial
             color={child.material.color}
-            transparent={child.material.opacity !== 1}
-            opacity={child.material.opacity}
+            // transparent={child.material.opacity !== 1}
+            // opacity={child.material.opacity}
           />
         </mesh>
       ))}
-      {/* <pointLight intensity={0.5} position={[0, 8, 0]} /> */}
+      <pointLight intensity={0.5} position={[0, 8, 0]} />
+    </group>
+  );
+};
+
+const Books = () => {
+  const { nodes } = useGLTF(sceneFile);
+  return (
+    <group
+      position={nodes.books.position}
+      rotation={nodes.books.rotation}
+      scale={nodes.books.scale}
+    >
+      {nodes.books.children.map((child, idx) => (
+        <mesh
+          key={`grass_${idx}`}
+          geometry={child.geometry}
+          castShadow
+          receiveShadow
+        >
+          <meshStandardMaterial color={child.material.color} />
+        </mesh>
+      ))}
     </group>
   );
 };
@@ -146,15 +158,16 @@ const SceneBase = () => {
     );
   });
 
-  console.log("nodes", nodes);
-  console.log("materials", materials);
-  console.log("scene", scene);
-  console.log("gltf", gltf);
+  // console.log("nodes", nodes);
+  // console.log("materials", materials);
+  // console.log("scene", scene);
+  // console.log("gltf", gltf);
 
   return (
     <>
       <Lamp />
       <Character />
+      <Books />
       <TableBook />
       <Table />
       <Chair />

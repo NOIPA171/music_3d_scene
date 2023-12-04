@@ -14,32 +14,10 @@ import {
 import { RGBADepthPacking } from "three";
 import CustomShaderMaterial from "three-custom-shader-material";
 
-import vertexShader from "./vertex.glsl";
+import vertexShader from "./shaders/grassVertex.glsl";
 
 const uWindVelocity = 1.5;
 const sceneFile = "/hills_scene.glb";
-
-const Books = () => {
-  const { nodes } = useGLTF(sceneFile);
-  return (
-    <group
-      position={nodes.books.position}
-      rotation={nodes.books.rotation}
-      scale={nodes.books.scale}
-    >
-      {nodes.books.children.map((child, idx) => (
-        <mesh
-          key={`grass_${idx}`}
-          geometry={child.geometry}
-          castShadow
-          receiveShadow
-        >
-          <meshStandardMaterial color={child.material.color} />
-        </mesh>
-      ))}
-    </group>
-  );
-};
 
 const Rocks = () => {
   const { nodes, materials } = useGLTF(sceneFile);
@@ -110,8 +88,6 @@ const Flowers = () => {
             // silent parameter to true disables the default warning if needed
             // silent
             uniforms={{
-              uColor: { value: child.material.color },
-              uPosition: { value: nodes.tall_flowers.position },
               uBend: { value: 0.05 },
               uTime: { value: 0 },
               uWindVelocity: { value: uWindVelocity },
@@ -153,8 +129,6 @@ const Grass = () => {
             // silent parameter to true disables the default warning if needed
             // silent
             uniforms={{
-              uColor: { value: child.material.color },
-              uPosition: { value: nodes.grass.position },
               uBend: { value: 1 },
               uTime: { value: 0 },
               uWindVelocity: { value: uWindVelocity },
@@ -172,10 +146,10 @@ const Grass = () => {
 const HillsScene = () => {
   const { nodes, materials, scene, ...gltf } = useGLTF(sceneFile);
 
-  console.log("nodes", nodes);
-  console.log("materials", materials);
-  console.log("scene", scene);
-  console.log("gltf", gltf);
+  // console.log("nodes", nodes);
+  // console.log("materials", materials);
+  // console.log("scene", scene);
+  // console.log("gltf", gltf);
 
   return (
     <>
@@ -187,7 +161,6 @@ const HillsScene = () => {
       /> */}
       {/* <fog attach="fog" color="#8FA87C" near={0.1} far={15} /> */}
       <fog attach="fog" color="yellow" near={0.1} far={20} />
-      <Books />
       <Tree />
       <Flowers />
       <Grass />
