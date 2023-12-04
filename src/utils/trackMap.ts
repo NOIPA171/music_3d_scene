@@ -2,9 +2,9 @@ export default {
   hills: <trackData>{
     fog: {
       color: "yellow",
-      far: 20,
+      far: 18,
     },
-    ambienceColor: "#fff1b3",
+    ambienceColor: "#abc9a7",
     bgColor: ["#8FA87C", "#67999A"],
     baseRock: {
       baseColor: "#EAD3A2",
@@ -14,7 +14,7 @@ export default {
   sea: <trackData>{
     fog: {
       color: "#3F7388",
-      far: 12,
+      far: 11,
     },
     ambienceColor: "#0075d4",
     bgColor: ["#3F7388", "#132B4C"],
