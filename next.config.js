@@ -1,4 +1,19 @@
+// deploy Next.js to github pages
+// https://www.viget.com/articles/host-build-and-deploy-next-js-projects-on-github-pages/
+// https://github.com/gregrickaby/nextjs-github-pages
+
 const path = require("path");
+
+const isGithubActions = process.env.GITHUB_ACTIONS || false;
+
+let assetPrefix = "";
+let basePath = "/";
+
+if (isGithubActions) {
+  const repo = process.env.GITHUB_REPOSITORY.replace(/.*?\//, "");
+  assetPrefix = `/${repo}/`;
+  basePath = `/${repo}`;
+}
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -29,6 +44,8 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  assetPrefix,
+  basePath,
   webpack: (config, options) => {
     config.module.rules.push({
       test: /\.(glsl|vs|fs|vert|frag)$/,
