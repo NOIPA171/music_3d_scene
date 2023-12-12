@@ -11,7 +11,7 @@ const sceneFile = "/scene_base.glb";
 const Character = () => {
   const { nodes, animations } = useGLTF("character.glb");
   const { ref, actions, names } = useAnimations(animations);
-  // console.log("character", nodes, materials, scene, actions, names);
+  // console.log("character", nodes, actions, names);
 
   useEffect(() => {
     actions[names[0]].reset().play();
@@ -20,7 +20,7 @@ const Character = () => {
   return (
     <>
       <group ref={ref} position={[0, 0.44, -0.05]} scale={0.0078}>
-        <primitive object={nodes.mixamorigHips_34} />
+        <primitive object={nodes.GLTF_created_0_rootJoint} />
         {nodes.Body.children.map((child, idx) => (
           <skinnedMesh
             key={`char_${idx}`}

@@ -4,6 +4,7 @@ import { createContext, useContext, useState, useEffect } from "react";
 import { useGlobalAudioPlayer } from "react-use-audio-player";
 import songList from "@/utils/data";
 import trackMap from "@/utils/trackMap";
+import { useControl } from "./ControlProvider";
 
 const PlayerContext = createContext<PlayerProps>({
   currentTrackIdx: 0,
@@ -24,6 +25,7 @@ const PlayerProvider = ({ children }: { children: React.ReactNode }) => {
     songList[currentTrackIdx].environment
   );
   const { isReady, playing, duration, load } = useGlobalAudioPlayer();
+  const { isAutoChange } = useControl();
 
   const normalizeIdx = (num: number): number =>
     (songList.length + num) % songList.length;
@@ -32,7 +34,9 @@ const PlayerProvider = ({ children }: { children: React.ReactNode }) => {
     const currIdx = normalizeIdx(index);
     setCurrentTrackIdx(currIdx);
     setCurrentTrack(songList[currIdx]);
-    setCurrentEnvironment(songList[currIdx].environment);
+    if (isAutoChange) {
+      setCurrentEnvironment(songList[currIdx].environment);
+    }
     load("/music/" + songList[currIdx].source, {
       autoplay,
       html5: true,
@@ -41,13 +45,15 @@ const PlayerProvider = ({ children }: { children: React.ReactNode }) => {
         loadSong(newIdx);
         setCurrentTrackIdx(newIdx);
         setCurrentTrack(songList[newIdx]);
-        setCurrentEnvironment(songList[newIdx].environment);
+        if (isAutoChange) {
+          setCurrentEnvironment(songList[newIdx].environment);
+        }
       },
     });
   };
 
   useEffect(() => {
-    loadSong(currentTrackIdx);
+    loadSong(currentTrackIdx, false);
   }, []);
 
   useEffect(() => {

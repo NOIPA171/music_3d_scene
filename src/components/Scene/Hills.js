@@ -121,7 +121,6 @@ const Grass = () => {
               uWindVelocity: { value: uWindVelocity },
             }}
             color={child.material.color}
-            // ...
           />
         </mesh>
       ))}
