@@ -114,6 +114,9 @@ const Player = () => {
     setPosition(newPosition);
   };
 
+  // TODO: Add keyboard controls: arrow keys to increment by 10 seconds
+  // TODO: Add keyboard controls: play button to play the music on this page
+
   return (
     <div className={cx("player")}>
       <div className={cx("controls")}>

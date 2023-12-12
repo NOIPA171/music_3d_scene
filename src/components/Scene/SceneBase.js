@@ -138,9 +138,7 @@ const Table = () => {
 const SceneBase = () => {
   const { nodes } = useGLTF(sceneFile);
 
-  const {
-    currentTrack: { environment },
-  } = usePlayer();
+  const { currentEnvironment } = usePlayer();
 
   const { camera } = useThree();
 
@@ -149,7 +147,12 @@ const SceneBase = () => {
     camera.updateProjectionMatrix();
   });
 
-  const trackData = trackMap[environment];
+  useEffect(() => {
+    camera.lookAt(0, 0.5, 0);
+    camera.updateProjectionMatrix();
+  }, []);
+
+  const trackData = trackMap[currentEnvironment];
 
   return (
     <>

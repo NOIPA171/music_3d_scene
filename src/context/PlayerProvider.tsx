@@ -8,6 +8,8 @@ import trackMap from "@/utils/trackMap";
 const PlayerContext = createContext<PlayerProps>({
   currentTrackIdx: 0,
   currentTrack: songList[0],
+  currentEnvironment: songList[0].environment,
+  setCurrentEnvironment: () => {},
   songList,
   loadSong: () => {},
   isReady: false,
@@ -18,9 +20,10 @@ const PlayerContext = createContext<PlayerProps>({
 const PlayerProvider = ({ children }: { children: React.ReactNode }) => {
   const [currentTrackIdx, setCurrentTrackIdx] = useState(0);
   const [currentTrack, setCurrentTrack] = useState(songList[currentTrackIdx]);
-  const { isReady, playing, duration } = useGlobalAudioPlayer();
-
-  const { load } = useGlobalAudioPlayer();
+  const [currentEnvironment, setCurrentEnvironment] = useState(
+    songList[currentTrackIdx].environment
+  );
+  const { isReady, playing, duration, load } = useGlobalAudioPlayer();
 
   const normalizeIdx = (num: number): number =>
     (songList.length + num) % songList.length;
@@ -29,6 +32,7 @@ const PlayerProvider = ({ children }: { children: React.ReactNode }) => {
     const currIdx = normalizeIdx(index);
     setCurrentTrackIdx(currIdx);
     setCurrentTrack(songList[currIdx]);
+    setCurrentEnvironment(songList[currIdx].environment);
     load("/music/" + songList[currIdx].source, {
       autoplay,
       html5: true,
@@ -37,24 +41,27 @@ const PlayerProvider = ({ children }: { children: React.ReactNode }) => {
         loadSong(newIdx);
         setCurrentTrackIdx(newIdx);
         setCurrentTrack(songList[newIdx]);
+        setCurrentEnvironment(songList[newIdx].environment);
       },
     });
   };
 
   useEffect(() => {
-    loadSong(currentTrackIdx, false);
+    loadSong(currentTrackIdx);
   }, []);
 
   useEffect(() => {
     // change bg on environment change
-    const colors = trackMap[currentTrack.environment].bgColor;
+    const colors = trackMap[currentEnvironment].bgColor;
     document.body.style.setProperty("--background-start-rgb", colors[0]);
     document.body.style.setProperty("--background-end-rgb", colors[1]);
-  }, [currentTrack.environment]);
+  }, [currentEnvironment]);
 
   const values: PlayerProps = {
     currentTrackIdx,
     currentTrack,
+    currentEnvironment,
+    setCurrentEnvironment,
     songList,
     loadSong,
     isReady,

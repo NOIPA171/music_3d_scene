@@ -1,0 +1,63 @@
+.controls-wrapper {
+  position: fixed;
+  top: 4rem;
+  left: 3rem;
+  z-index: 2;
+}
+.show-btn {
+  margin-bottom: 2rem;
+}
+.controls {
+  display: none;
+  &.show {
+    display: block;
+  }
+  label {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+}
+
+.accordian {
+  background-color: rgba(#fff, 0.05);
+  border-radius: 10px;
+  overflow: hidden;
+
+  .accordian-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 1.25rem;
+    // border-bottom: solid 1px rgba(#fff, 0.2);
+    cursor: pointer;
+  }
+  .triangle {
+    transition: transform 0.2s;
+  }
+  .accordian-content {
+    li {
+      padding: 0.5rem 1.25rem;
+      cursor: pointer;
+      color: rgba(#fff, 0.7);
+      transition: background-color $trans-duration;
+      &:first-child {
+        border-top: solid 1px rgba(#fff, 0.2);
+      }
+      &:hover {
+        background-color: rgba(#000, 0.3);
+      }
+      &.active {
+        background-color: rgba(#000, 0.3);
+        color: rgba(#fff, 1);
+      }
+    }
+  }
+
+  &.expanded {
+    .triangle {
+      transform: rotate(180deg);
+    }
+  }
+}

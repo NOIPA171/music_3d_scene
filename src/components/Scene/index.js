@@ -11,11 +11,9 @@ import trackMap from "@/utils/trackMap.ts";
 // MeshWobbleMaterial -> can be used for flower/plants
 
 const Scene = () => {
-  const {
-    currentTrack: { environment },
-  } = usePlayer();
+  const { currentEnvironment } = usePlayer();
 
-  const trackData = trackMap[environment];
+  const trackData = trackMap[currentEnvironment];
   return (
     <>
       <Canvas
@@ -47,8 +45,8 @@ const Scene = () => {
         <group
         //  position={[0.2, -0.3, 0]}
         >
-          {environment === "hills" && <Hills />}
-          {environment === "sea" && <Sea />}
+          {currentEnvironment === "hills" && <Hills />}
+          {currentEnvironment === "sea" && <Sea />}
           <SceneBase />
         </group>
       </Canvas>

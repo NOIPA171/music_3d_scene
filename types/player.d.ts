@@ -21,9 +21,10 @@ declare type songItem = {
 
 declare type PlayerProps = {
   currentTrackIdx: number;
-  // setCurrentTrackIdx: React.Dispatch<React.SetStateAction<number>>;
   songList: songItem[];
   currentTrack: songItem;
+  currentEnvironment: trackEnvironment;
+  setCurrentEnvironment: React.Dispatch<React.SetStateAction<trackEnvironment>>;
   loadSong: Function<void>;
   isReady: boolean;
   playing: boolean;
