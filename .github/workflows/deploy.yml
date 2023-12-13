@@ -70,7 +70,7 @@ jobs:
       - name: Build with Next.js
         run: ${{ steps.detect-package-manager.outputs.runner }} next build
         env:
-          NEXT_PUBLIC_BASE_PATH: ${{ vars.PUBLIC_BASE_PATH }}
+          NEXT_PUBLIC_BASE_PATH: /music_3d_scene
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
