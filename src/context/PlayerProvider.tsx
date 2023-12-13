@@ -5,6 +5,7 @@ import { useGlobalAudioPlayer } from "react-use-audio-player";
 import songList from "@/utils/data";
 import trackMap from "@/utils/trackMap";
 import { useControl } from "./ControlProvider";
+import { prefix } from "@/utils/env";
 
 const PlayerContext = createContext<PlayerProps>({
   currentTrackIdx: 0,
@@ -37,7 +38,7 @@ const PlayerProvider = ({ children }: { children: React.ReactNode }) => {
     if (isAutoChange) {
       setCurrentEnvironment(songList[currIdx].environment);
     }
-    load("/music/" + songList[currIdx].source, {
+    load(`${prefix}/music/` + songList[currIdx].source, {
       autoplay,
       html5: true,
       onend: () => {
