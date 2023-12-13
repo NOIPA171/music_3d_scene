@@ -19,7 +19,6 @@ const Controller = () => {
   const [isExpand, setIsExpand] = useState(true);
 
   useEffect(() => {
-    console.log("run");
     // const sound = new Howl({
     //   src: ["/ambience/underwater-ambience-6201.mp3"],
     //   loop: true,
@@ -76,7 +75,7 @@ const Controller = () => {
           >
             Environment
             <Image
-              src={`/icons/triangle.svg`}
+              src={`${prefix}/icons/triangle.svg`}
               alt={isExpand ? "close" : "expand"}
               width={6}
               height={6}
