@@ -1,6 +1,8 @@
 :root {
   --background-start-rgb: "#8FA87C";
   --background-end-rgb: "#67999A";
+  --top-padding: 4rem;
+  --padding: 3rem;
 }
 
 * {
@@ -19,6 +21,16 @@ body {
   font-weight: 300;
 }
 
+@media only screen and (max-width: $phone-width) {
+  :root {
+    --top-padding: 3rem;
+    --padding: 2rem;
+  }
+  html {
+    font-size: 14px;
+  }
+}
+
 body {
   color: #fff;
   background: linear-gradient(to bottom, transparent, var(--background-end-rgb))
@@ -34,7 +46,7 @@ a {
 h1 {
   position: fixed;
   width: 100%;
-  top: 4rem;
+  top: var(--top-padding);
   text-align: center;
   font-weight: 300;
   letter-spacing: 0.5rem;

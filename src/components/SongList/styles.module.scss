@@ -1,7 +1,8 @@
 .player-list {
+  display: block;
   position: absolute;
-  bottom: 3rem;
-  left: 3rem;
+  bottom: var(--padding);
+  left: var(--padding);
   li {
     display: flex;
     align-items: center;
@@ -9,6 +10,10 @@
     opacity: 0.6;
     transition: opacity $trans-duration;
     cursor: pointer;
+    margin-bottom: 0.5rem;
+    &:last-child {
+      margin-bottom: 0;
+    }
     &:hover {
       opacity: 0.8;
     }
@@ -22,5 +27,11 @@
     height: 1px;
     width: 10px;
     background-color: #fff;
+  }
+}
+
+@media only screen and (max-width: $phone-width) {
+  .player-list {
+    display: none;
   }
 }

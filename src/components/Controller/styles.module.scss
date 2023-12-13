@@ -1,7 +1,7 @@
 .controls-wrapper {
   position: fixed;
-  top: 4rem;
-  left: 3rem;
+  top: var(--top-padding);
+  left: var(--padding);
   z-index: 2;
 }
 .show-btn {

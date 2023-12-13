@@ -15,4 +15,9 @@ export default <songItem[]>[
       "relax-chill-out-music-for-landscapes-under-water-animals-forests-8105.mp3",
     environment: "sea",
   },
+  {
+    song_name: "Deep into thoughrs",
+    source: "relaxing-music-part-1-141198.mp3",
+    environment: "sea",
+  },
 ];

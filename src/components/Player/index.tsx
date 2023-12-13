@@ -37,6 +37,34 @@ const Player = () => {
   const durationRef = useRef(0); // same as duration from audio
   // element that detects dragging
   const barElm = useRef<HTMLDivElement>(null);
+  // update playing state for keyboard event
+  const playingRef = useRef(playing);
+
+  // keyboard controls: arrow keys to increment/decrement by 10 seconds
+  useEffect(() => {
+    const IncrementSecs = (evt: KeyboardEvent) => {
+      if (!playingRef.current) return;
+      switch (evt.code) {
+        case "ArrowRight":
+          seek(Math.floor(getPosition() + 5));
+          break;
+        case "ArrowLeft":
+          const newPos = Math.floor(getPosition() - 5);
+          seek(newPos > 0 ? newPos : 0);
+          break;
+      }
+    };
+    document.addEventListener("keydown", IncrementSecs);
+
+    return () => {
+      document.removeEventListener("keydown", IncrementSecs);
+    };
+  }, []);
+
+  useEffect(() => {
+    // update playing stats for keyboard control
+    playingRef.current = playing;
+  }, [playing]);
 
   useEffect(() => {
     // update durationRef when song is loaded
@@ -115,7 +143,6 @@ const Player = () => {
     setPosition(newPosition);
   };
 
-  // TODO: Add keyboard controls: arrow keys to increment by 10 seconds
   // TODO: Add keyboard controls: play button to play the music on this page
 
   return (
@@ -140,7 +167,7 @@ const Player = () => {
         <button onClick={() => loadSong(currentTrackIdx + 1, playing)}>
           <Image
             src={`${prefix}/icons/player-skip-forward.svg`}
-            alt="skip back"
+            alt="skip forward"
             width={24}
             height={24}
           />
