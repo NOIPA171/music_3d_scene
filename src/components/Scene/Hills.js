@@ -8,9 +8,10 @@ import { RGBADepthPacking } from "three";
 import CustomShaderMaterial from "three-custom-shader-material";
 
 import vertexShader from "./shaders/swayVertex.glsl";
+import { prefix } from "@/utils/env";
 
 const uWindVelocity = 1.5;
-const sceneFile = "/hills_scene.glb";
+const sceneFile = `${prefix}/hills_scene.glb`;
 
 const Rocks = () => {
   const { nodes, materials } = useGLTF(sceneFile);

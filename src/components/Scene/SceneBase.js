@@ -5,11 +5,12 @@ import { useFrame, useThree } from "@react-three/fiber";
 import { useGLTF, useAnimations } from "@react-three/drei";
 import { usePlayer } from "@/context/PlayerProvider";
 import trackMap from "@/utils/trackMap.ts";
+import { prefix } from "@/utils/env";
 
-const sceneFile = "/scene_base.glb";
+const sceneFile = `${prefix}/scene_base.glb`;
 
 const Character = () => {
-  const { nodes, animations } = useGLTF("character.glb");
+  const { nodes, animations } = useGLTF(`${prefix}/character.glb`);
   const { ref, actions, names } = useAnimations(animations);
   // console.log("character", nodes, actions, names);
 

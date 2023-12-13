@@ -7,13 +7,14 @@ import { useGLTF, useAnimations } from "@react-three/drei";
 import CustomShaderMaterial from "three-custom-shader-material";
 import vertexShader from "./shaders/seaweedVertex.glsl";
 import swayVertexShader from "./shaders/swayVertex.glsl";
+import { prefix } from "@/utils/env";
 
 const uWindVelocity = 1.5;
 const kelpBend = 0.01;
-const sceneFile = "/sea_scene.glb";
+const sceneFile = `${prefix}/sea_scene.glb`;
 
 const Fish = () => {
-  const { nodes, animations } = useGLTF("fish.glb");
+  const { nodes, animations } = useGLTF(`${prefix}/fish.glb`);
   const { ref, actions, names } = useAnimations(animations);
   // console.log("fish", nodes, actions, names);
 
