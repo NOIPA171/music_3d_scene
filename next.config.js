@@ -1,6 +1,7 @@
 // deploy Next.js to github pages
 // https://www.viget.com/articles/host-build-and-deploy-next-js-projects-on-github-pages/
 // https://github.com/gregrickaby/nextjs-github-pages
+// https://www.linkedin.com/pulse/deploy-nextjs-app-github-pages-federico-antu%C3%B1a/
 
 const path = require("path");
 
