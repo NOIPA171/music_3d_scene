@@ -1,12 +1,12 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
-import { useGlobalAudioPlayer } from "react-use-audio-player";
 import { useControl } from "@/context/ControlProvider";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Toggle from "react-toggle";
 import styles from "./styles.module.scss";
 import classNames from "classnames/bind";
+import { prefix } from "@/utils/env";
 import { usePlayer } from "@/context/PlayerProvider";
 import { Howl, Howler } from "howler";
 
@@ -43,7 +43,7 @@ const Controller = () => {
         onClick={() => setIsShow((prev) => !prev)}
       >
         <Image
-          src={`/icons/${isShow ? "eye" : "eye-off"}.svg`}
+          src={`${prefix}/icons/${isShow ? "eye" : "eye-off"}.svg`}
           alt={isShow ? "hide controls" : "show controls"}
           width={24}
           height={24}

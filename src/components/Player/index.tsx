@@ -3,8 +3,9 @@ import { useEffect, useState, useRef } from "react";
 import { useGlobalAudioPlayer } from "react-use-audio-player";
 import Image from "next/image";
 import styles from "./styles.module.scss";
-import classNames from "classnames/bind";
 import { usePlayer } from "@/context/PlayerProvider";
+import { prefix } from "@/utils/env";
+import classNames from "classnames/bind";
 const cx = classNames.bind(styles);
 
 const parseDigits = (number: number): string => {
@@ -122,7 +123,7 @@ const Player = () => {
       <div className={cx("controls")}>
         <button onClick={() => loadSong(currentTrackIdx - 1, playing)}>
           <Image
-            src={`/icons/player-skip-back.svg`}
+            src={`${prefix}/icons/player-skip-back.svg`}
             alt="skip back"
             width={24}
             height={24}
@@ -130,7 +131,7 @@ const Player = () => {
         </button>
         <button onClick={() => togglePlayPause()} className={cx("main-btn")}>
           <Image
-            src={`/icons/player-${playing ? "pause" : "play"}.svg`}
+            src={`${prefix}/icons/player-${playing ? "pause" : "play"}.svg`}
             alt={playing ? "pause" : "play"}
             width={24}
             height={24}
@@ -138,7 +139,7 @@ const Player = () => {
         </button>
         <button onClick={() => loadSong(currentTrackIdx + 1, playing)}>
           <Image
-            src={`/icons/player-skip-forward.svg`}
+            src={`${prefix}/icons/player-skip-forward.svg`}
             alt="skip back"
             width={24}
             height={24}
