@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect, useRef } from "react";
 import { useGlobalAudioPlayer } from "react-use-audio-player";
 import songList from "@/utils/data";
 import trackMap from "@/utils/trackMap";
@@ -25,9 +25,12 @@ const PlayerProvider = ({ children }: { children: React.ReactNode }) => {
   const [currentEnvironment, setCurrentEnvironment] = useState(
     songList[currentTrackIdx].environment
   );
-  const { isReady, playing, duration, load } = useGlobalAudioPlayer();
+  const { isReady, playing, duration, load, pause, play } =
+    useGlobalAudioPlayer();
   const { isAutoChange } = useControl();
+  const currentTrackIdxRef = useRef(currentTrackIdx); // for keyboard shortcuts
 
+  // loop through track
   const normalizeIdx = (num: number): number =>
     (songList.length + num) % songList.length;
 
@@ -35,6 +38,7 @@ const PlayerProvider = ({ children }: { children: React.ReactNode }) => {
     const currIdx = normalizeIdx(index);
     setCurrentTrackIdx(currIdx);
     setCurrentTrack(songList[currIdx]);
+    // autochange when toggle is on
     if (isAutoChange) {
       setCurrentEnvironment(songList[currIdx].environment);
     }
@@ -53,7 +57,27 @@ const PlayerProvider = ({ children }: { children: React.ReactNode }) => {
     });
   };
 
+  // Keyboard shortcuts Media Session API
+  // https://developer.mozilla.org/en-US/docs/Web/API/Media_Session_API
   useEffect(() => {
+    currentTrackIdxRef.current = currentTrackIdx;
+  }, [currentTrackIdx]);
+
+  useEffect(() => {
+    navigator.mediaSession.setActionHandler("play", () => {
+      play();
+    });
+    navigator.mediaSession.setActionHandler("pause", () => {
+      pause();
+    });
+    navigator.mediaSession.setActionHandler("previoustrack", () => {
+      loadSong(currentTrackIdxRef.current - 1);
+    });
+    navigator.mediaSession.setActionHandler("nexttrack", () => {
+      loadSong(currentTrackIdxRef.current + 1);
+    });
+
+    // initial load
     loadSong(currentTrackIdx, false);
   }, []);
 
