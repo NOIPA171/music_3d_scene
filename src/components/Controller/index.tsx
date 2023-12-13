@@ -47,6 +47,12 @@ const Controller = () => {
             className={cx("accordian-title")}
             role="button"
             onClick={() => setIsExpand((prev) => !prev)}
+            tabIndex={0}
+            onKeyDown={(evt) => {
+              if (evt.code === "Space" || evt.code === "Enter") {
+                setIsExpand((prev) => !prev);
+              }
+            }}
           >
             Environment
             <Image
@@ -70,6 +76,12 @@ const Controller = () => {
               role="button"
               className={cx({ active: currentEnvironment === "hills" })}
               onClick={() => setCurrentEnvironment("hills")}
+              onKeyDown={(evt) => {
+                if (evt.code === "Space" || evt.code === "Enter") {
+                  setCurrentEnvironment("hills");
+                }
+              }}
+              tabIndex={0}
             >
               Hills
             </li>
@@ -77,6 +89,12 @@ const Controller = () => {
               role="button"
               className={cx({ active: currentEnvironment === "sea" })}
               onClick={() => setCurrentEnvironment("sea")}
+              onKeyDown={(evt) => {
+                if (evt.code === "Space" || evt.code === "Enter") {
+                  setCurrentEnvironment("sea");
+                }
+              }}
+              tabIndex={0}
             >
               Ocean
             </li>
