@@ -14,7 +14,6 @@
     "@types/three": "^0.158.0",
     "classnames": "^2.3.2",
     "framer-motion": "^10.16.16",
-    "howler": "^2.2.4",
     "next": "14.0.0",
     "react": "^18",
     "react-dom": "^18",
@@ -25,7 +24,6 @@
     "three-custom-shader-material": "^5.4.0"
   },
   "devDependencies": {
-    "@types/howler": "^2.2.11",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
