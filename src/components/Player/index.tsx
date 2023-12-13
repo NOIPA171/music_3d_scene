@@ -46,10 +46,10 @@ const Player = () => {
       if (!playingRef.current) return;
       switch (evt.code) {
         case "ArrowRight":
-          seek(Math.floor(getPosition() + 5));
+          seek(Math.floor(getPosition() + 10));
           break;
         case "ArrowLeft":
-          const newPos = Math.floor(getPosition() - 5);
+          const newPos = Math.floor(getPosition() - 10);
           seek(newPos > 0 ? newPos : 0);
           break;
       }
