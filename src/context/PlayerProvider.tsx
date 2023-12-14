@@ -70,6 +70,7 @@ const PlayerProvider = ({ children }: { children: React.ReactNode }) => {
     navigator.mediaSession.setActionHandler("pause", () => {
       pause();
     });
+    // always play on skip -> prevent mediaSession end
     navigator.mediaSession.setActionHandler("previoustrack", () => {
       loadSong(currentTrackIdxRef.current - 1);
     });
